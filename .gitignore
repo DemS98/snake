@@ -1,0 +1,3 @@
+# Ignore exe and obj files
+*.o
+snake
