@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <string.h>
+#include <SDL3/SDL_pixels.h>
+#include <SDL3/SDL_render.h>
+#include <SDL3/SDL_surface.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include "draw.h"
 #include "../common/color.h"
 #include "../common/screen.h"
-#include "SDL3/SDL_pixels.h"
-#include "SDL3/SDL_render.h"
-#include "SDL3/SDL_surface.h"
-#include "SDL3_ttf/SDL_ttf.h"
 
 static TTF_Font *pixel;
 

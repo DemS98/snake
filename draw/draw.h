@@ -1,9 +1,8 @@
 /*
     Screen draw module
 */
-
+#include <SDL3/SDL_render.h>
 #include "../entity/food.h"
-#include "SDL3/SDL_render.h"
 
 /* Inits resources needed for drawing the map objects */
 void init_draw();

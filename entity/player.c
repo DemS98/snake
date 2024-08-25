@@ -1,7 +1,7 @@
-#include "player.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "player.h"
 
 // Food queue
 struct _food_queue_node {

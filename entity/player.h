@@ -1,5 +1,5 @@
-#include "food.h"
 #include <stdbool.h>
+#include "food.h"
 
 #define PLAYER_SPEED 50
 #define PLAYER_MAX_SPEED 20

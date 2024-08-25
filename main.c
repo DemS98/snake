@@ -8,6 +8,7 @@
 #include <time.h>
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_stdinc.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_events.h>
 #include <SDL3/SDL_timer.h>
@@ -247,7 +248,7 @@ int SDL_AppIterate(void *appstate)
 
     if (*score < player_score(player) && score_ticks_passed >= SCORE_SPEED) {
         *score +=2;
-        last_score_ticks = SDL_GetTicks() - (score_ticks_passed - SCORE_SPEED);
+        last_score_ticks = SDL_GetTicks() - SDL_min(score_ticks_passed - SCORE_SPEED, 0);
     }
 
     // Renders score

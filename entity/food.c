@@ -1,9 +1,9 @@
 #include <stdlib.h>
+#include <SDL3/SDL_pixels.h>
 #include "food.h"
 #include "../common/color.h"
 #include "../common/screen.h"
 #include "../common/utils.h"
-#include "SDL3/SDL_pixels.h"
 
 struct _object {
     unsigned short x;

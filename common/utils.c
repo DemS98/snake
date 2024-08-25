@@ -1,5 +1,5 @@
-#include "utils.h"
 #include <stdlib.h>
+#include "utils.h"
 
 unsigned short normalize(short num, unsigned short max) {
     if (num < 0) {

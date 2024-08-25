@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "SDL3/SDL_audio.h"
-#include "SDL3_mixer/SDL_mixer.h"
+#include <SDL3/SDL_audio.h>
+#include <SDL3_mixer/SDL_mixer.h>
 
 static Mix_Chunk *eat_sound, *death_sound;
 static bool device_error;
