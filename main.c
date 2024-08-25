@@ -176,23 +176,25 @@ int SDL_AppIterate(void *appstate)
     unsigned short *speed = state->objects[4];
     unsigned short *score = state->objects[5];
 
+    int mov_ticks_passed = SDL_GetTicks() - last_mov_ticks;
+
     // If player killed himself
     if (*dead) {
-        if (SDL_GetTicks() - last_mov_ticks >= PLAYER_KILL_SPEED) {
+        if (mov_ticks_passed >= PLAYER_KILL_SPEED) {
             // Death animation (I know... it's bad)
             chop_player_head(player);
 
             // Reset tick
-            last_mov_ticks = SDL_GetTicks();
+            last_mov_ticks = SDL_GetTicks() - (mov_ticks_passed - PLAYER_KILL_SPEED);
         }
     // If movement tick time
-    } else if (SDL_GetTicks() - last_mov_ticks >= *speed) {
+    } else if (mov_ticks_passed >= *speed) {
         // Debug player stats
         #ifdef DEBUG
         food head = player_object(player, true);
         if (head != NULL) {
             printf("\e[1;1H\e[2J");
-            printf("speed: %lu mov/s\n", 1000 / (SDL_GetTicks() - last_mov_ticks));
+            printf("speed: %d mov/s\n", 1000 / mov_ticks_passed);
             printf("player -> x = %d, y = %d\n", get_food_x(head), get_food_y(head));
             printf("food -> x = %d, y = %d\n", get_food_x(spawned), get_food_y(spawned));
         }
@@ -222,7 +224,7 @@ int SDL_AppIterate(void *appstate)
             }
         }
 
-        last_mov_ticks = SDL_GetTicks();
+        last_mov_ticks = SDL_GetTicks() - (mov_ticks_passed - *speed);
     }
 
     draw_map(renderer);
@@ -241,9 +243,11 @@ int SDL_AppIterate(void *appstate)
 
     // At SCORE_SPEED tick speed, while the render score doesn't reach the player score
     // Increase each time by 2
-    if (*score < player_score(player) && SDL_GetTicks() - last_score_ticks >= SCORE_SPEED) {
+    int score_ticks_passed = SDL_GetTicks() - last_score_ticks;
+
+    if (*score < player_score(player) && score_ticks_passed >= SCORE_SPEED) {
         *score +=2;
-        last_score_ticks = SDL_GetTicks();
+        last_score_ticks = SDL_GetTicks() - (score_ticks_passed - SCORE_SPEED);
     }
 
     // Renders score
