@@ -15,6 +15,19 @@ To remove intermediate object files, `make clean`.
 
 To compile with debug informations: `make CFLAGS=-DDEBUG`
 
+### Compile for other architectures
+
+You need to compile:
+
+* [libSDL3](https://github.com/libsdl-org/SDL)
+* [libSDL3_mixer](https://github.com/libsdl-org/SDL_mixer)
+* [libSDL3_ttf](https://github.com/libsdl-org/SDL_ttf)
+
+for your architecture and put the **static** library files in [lib/](./lib/), as the x86 counterpart.
+
+Alternatively, you can download the libraries through a package manager and edit the [Makefile](./Makefile) to refer those
+libraries.
+
 ## Play
 
 Just move the snake with the arrow keys.
