@@ -25,9 +25,9 @@
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 
-// Timestamp of start movement and score
-static unsigned long start_movement = 0;
-static unsigned long start_score = 0;
+// Last tick timestamp for movement and score
+static unsigned long last_mov_ticks = 0;
+static unsigned long last_score_ticks = 0;
 
 // Gets new movement from the keyboard state
 // If new movement cannot be made (e.g. move bottom if going up), returns the current direction
@@ -146,6 +146,8 @@ int SDL_AppInit(void **appstate, int argc, char *argv[])
 
     *appstate = state;
 
+    last_mov_ticks = last_score_ticks = SDL_GetTicks();
+
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
@@ -162,16 +164,6 @@ int SDL_AppEvent(void *appstate, const SDL_Event *event)
 /* This function runs once per frame, and is the heart of the program. */
 int SDL_AppIterate(void *appstate)
 {
-    // Movement start tick
-    if (start_movement == 0) {
-        start_movement = SDL_GetTicks();
-    }
-
-    // Score start 
-    if (start_score == 0) {
-        start_score = SDL_GetTicks();
-    }
-
     const Uint8* keystates = SDL_GetKeyboardState(NULL);
 
     state *state = appstate;
@@ -186,21 +178,21 @@ int SDL_AppIterate(void *appstate)
 
     // If player killed himself
     if (*dead) {
-        if (SDL_GetTicks() - start_movement >= PLAYER_KILL_SPEED) {
+        if (SDL_GetTicks() - last_mov_ticks >= PLAYER_KILL_SPEED) {
             // Death animation (I know... it's bad)
             chop_player_head(player);
 
             // Reset tick
-            start_movement = 0;
+            last_mov_ticks = SDL_GetTicks();
         }
     // If movement tick time
-    } else if (SDL_GetTicks() - start_movement >= *speed) {
+    } else if (SDL_GetTicks() - last_mov_ticks >= *speed) {
         // Debug player stats
         #ifdef DEBUG
         food head = player_object(player, true);
         if (head != NULL) {
             printf("\e[1;1H\e[2J");
-            printf("speed: %lu mov/s\n", 1000 / (SDL_GetTicks() - start_movement));
+            printf("speed: %lu mov/s\n", 1000 / (SDL_GetTicks() - last_mov_ticks));
             printf("player -> x = %d, y = %d\n", get_food_x(head), get_food_y(head));
             printf("food -> x = %d, y = %d\n", get_food_x(spawned), get_food_y(spawned));
         }
@@ -230,7 +222,7 @@ int SDL_AppIterate(void *appstate)
             }
         }
 
-        start_movement = 0;
+        last_mov_ticks = SDL_GetTicks();
     }
 
     draw_map(renderer);
@@ -249,9 +241,9 @@ int SDL_AppIterate(void *appstate)
 
     // At SCORE_SPEED tick speed, while the render score doesn't reach the player score
     // Increase each time by 2
-    if (*score < player_score(player) && SDL_GetTicks() - start_score >= SCORE_SPEED) {
+    if (*score < player_score(player) && SDL_GetTicks() - last_score_ticks >= SCORE_SPEED) {
         *score +=2;
-        start_score = 0;
+        last_score_ticks = SDL_GetTicks();
     }
 
     // Renders score
