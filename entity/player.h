@@ -2,7 +2,9 @@
 #include <stdbool.h>
 
 #define PLAYER_SPEED 50
-#define KILL_SPEED 25
+#define PLAYER_MAX_SPEED 20
+#define PLAYER_SPEED_GAIN_STEPS 5
+#define PLAYER_KILL_SPEED 25
 #define PLAYER_START_SIZE 8
 #define PLAYER_SCORE_GAIN 100
 

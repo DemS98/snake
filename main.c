@@ -186,7 +186,7 @@ int SDL_AppIterate(void *appstate)
 
     // If player killed himself
     if (*dead) {
-        if (SDL_GetTicks() - start_movement >= KILL_SPEED) {
+        if (SDL_GetTicks() - start_movement >= PLAYER_KILL_SPEED) {
             // Death animation (I know... it's bad)
             chop_player_head(player);
 
@@ -216,7 +216,7 @@ int SDL_AppIterate(void *appstate)
             // Increase speed every 5 foods eaten
             // Speed is the tick movement ms time
             unsigned short eaten = player_size(player) - PLAYER_START_SIZE;
-            if (eaten > 0 && eaten % 5 == 0 && *speed > 20) {
+            if (eaten > 0 && eaten % PLAYER_SPEED_GAIN_STEPS == 0 && *speed > PLAYER_MAX_SPEED) {
                 *speed -= 2;
             }
 
