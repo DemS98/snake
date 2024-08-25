@@ -195,6 +195,17 @@ int SDL_AppIterate(void *appstate)
         }
     // If movement tick time
     } else if (SDL_GetTicks() - start_movement >= *speed) {
+        // Debug player stats
+        #ifdef DEBUG
+        food head = player_object(player, true);
+        if (head != NULL) {
+            printf("\e[1;1H\e[2J");
+            printf("speed: %lu mov/s\n", 1000 / (SDL_GetTicks() - start_movement));
+            printf("player -> x = %d, y = %d\n", get_food_x(head), get_food_y(head));
+            printf("food -> x = %d, y = %d\n", get_food_x(spawned), get_food_y(spawned));
+        }
+        #endif
+
         *direction = get_direction_from_keycode(keystates, *direction);
         
         // If player ate food
@@ -227,16 +238,6 @@ int SDL_AppIterate(void *appstate)
     // Snake head
     food food = player_object(player, true);
 
-    // Debug player stats
-    #ifdef DEBUG
-    if (food != NULL) {
-        printf("\e[1;1H\e[2J");
-        printf("player -> x = %d, y = %d\n", get_food_x(food), get_food_y(food));
-        printf("speed -> %d\n", *speed);
-        printf("food -> x = %d, y = %d\n", get_food_x(spawned), get_food_y(spawned));
-    }
-    #endif
-
     // Snake body rendered, starting from 'food' head
     while (food != NULL) {
         draw_object(renderer, food);
@@ -249,7 +250,7 @@ int SDL_AppIterate(void *appstate)
     // At SCORE_SPEED tick speed, while the render score doesn't reach the player score
     // Increase each time by 2
     if (*score < player_score(player) && SDL_GetTicks() - start_score >= SCORE_SPEED) {
-        (*score)+=2;
+        *score +=2;
         start_score = 0;
     }
 
