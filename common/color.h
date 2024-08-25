@@ -1,3 +1,17 @@
+/*
+    Function macros for colors.
+
+    Supported colors:
+
+    - Red
+    - Light blue
+    - Green
+    - Black
+    - White
+    - Orange
+    - YelloW
+ */
+
 #define RED(color) {color.r = 255; color.g = 0; color.b = 0; color.a = 255;}
 #define LIGHT_BLUE(color) {color.r = 0; color.g = 128; color.b = 255; color.a = 255;}
 #define GREEN(color) {color.r = 0; color.g = 255; color.b = 0; color.a = 255;}

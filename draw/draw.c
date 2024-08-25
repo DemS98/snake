@@ -8,7 +8,16 @@
 #include "SDL3/SDL_surface.h"
 #include "SDL3_ttf/SDL_ttf.h"
 
-TTF_Font *pixel = NULL;
+static TTF_Font *pixel;
+
+void init_draw() {
+    TTF_Init();
+    pixel = TTF_OpenFont("resources/NovaMono.ttf", FONT_SIZE);
+
+    if (pixel == NULL) {
+        fprintf(stderr, "SDL_ttf error on opening NovaMono font: %s\n", TTF_GetError());
+    }
+}
 
 void draw_map(SDL_Renderer *renderer) {
     // black background
@@ -39,53 +48,55 @@ void draw_object(SDL_Renderer *renderer, food object) {
 
     SDL_SetRenderDrawColor(renderer, color->r, color->g, color->b, color->a);
 
+    // Coordinates are calculated starting from the map first pixel location
     SDL_FRect obj = {.x = MAP_X + get_food_x(object) * PX_SIZE, .y = MAP_Y + get_food_y(object) * PX_SIZE, .w=PX_SIZE, .h=PX_SIZE};
 
     SDL_RenderFillRect(renderer, &obj);
 }
 
 void draw_score(SDL_Renderer *renderer, unsigned short score) {
-    if (pixel == NULL) {
-        TTF_Init();
-        pixel = TTF_OpenFont("resources/NovaMono.ttf", FONT_SIZE);
+    if (pixel != NULL) {
+        SDL_Color white;
+        WHITE(white);
+
+        char str[20];
+        snprintf(str, sizeof(str), "SCORE: %09d", score);
+
+        SDL_Surface* surface_message = TTF_RenderText_Blended(pixel, str, white);
+
+        SDL_Texture* score_texture = SDL_CreateTextureFromSurface(renderer, surface_message);
+        SDL_FRect container = {.x = MAP_X, .y = MAP_Y - FONT_SIZE - 10, .w = FONT_SIZE * strlen(str), .h = FONT_SIZE + 15};
+
+        SDL_RenderTexture(renderer, score_texture, NULL, &container);
+
+        SDL_DestroySurface(surface_message);
+        SDL_DestroyTexture(score_texture);
     }
-
-    SDL_Color white;
-    WHITE(white);
-
-    char str[20];
-    snprintf(str, sizeof(str), "SCORE: %09d", score);
-
-    SDL_Surface* surface_message = TTF_RenderText_Blended(pixel, str, white);
-
-    SDL_Texture* score_texture = SDL_CreateTextureFromSurface(renderer, surface_message);
-    SDL_FRect container = {.x = MAP_X, .y = MAP_Y - FONT_SIZE - 10, .w = FONT_SIZE * strlen(str), .h = FONT_SIZE + 15};
-
-    SDL_RenderTexture(renderer, score_texture, NULL, &container);
-
-    SDL_DestroySurface(surface_message);
-    SDL_DestroyTexture(score_texture);
 }
 
 void draw_time(SDL_Renderer *renderer, unsigned long time) {
-    if (pixel == NULL) {
-        TTF_Init();
-        pixel = TTF_OpenFont("resources/NovaMono.ttf", FONT_SIZE);
+    if (pixel != NULL) {
+        SDL_Color white;
+        WHITE(white);
+
+        char str[20];
+        
+        snprintf(str, sizeof(str), "TIME: %02d:%02d", (int) time / 1000 / 60, (int) (time / 1000) % 60);
+
+        SDL_Surface* surface_message = TTF_RenderText_Blended(pixel, str, white);
+        SDL_Texture* score_texture = SDL_CreateTextureFromSurface(renderer, surface_message);
+        SDL_FRect container = {.x = MAP_X + (MAP_WIDTH * PX_SIZE) - (strlen(str) * FONT_SIZE), .y = MAP_Y - FONT_SIZE - 10, .w = FONT_SIZE * strlen(str), .h = FONT_SIZE + 15};
+        
+        SDL_RenderTexture(renderer, score_texture, NULL, &container);
+        
+        SDL_DestroySurface(surface_message);
+        SDL_DestroyTexture(score_texture);
     }
-
-    SDL_Color white;
-    WHITE(white);
-
-    char str[20];
     
-    snprintf(str, sizeof(str), "TIME: %02d:%02d", (int) time / 1000 / 60, (int) (time / 1000) % 60);
+}
 
-    SDL_Surface* surface_message = TTF_RenderText_Blended(pixel, str, white);
-    SDL_Texture* score_texture = SDL_CreateTextureFromSurface(renderer, surface_message);
-    SDL_FRect container = {.x = MAP_X + (MAP_WIDTH * PX_SIZE) - (strlen(str) * FONT_SIZE), .y = MAP_Y - FONT_SIZE - 10, .w = FONT_SIZE * strlen(str), .h = FONT_SIZE + 15};
-    
-    SDL_RenderTexture(renderer, score_texture, NULL, &container);
-    
-    SDL_DestroySurface(surface_message);
-    SDL_DestroyTexture(score_texture);
+void destroy_draw() {
+    if (pixel != NULL) {
+        TTF_CloseFont(pixel);
+    }
 }

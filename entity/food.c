@@ -18,6 +18,7 @@ food spawn_food(unsigned short x, unsigned short y) {
         return NULL;
     }
 
+    // Pick a random color for the food
     SDL_Color color;
     pick_color(color, rand() % 5);
 
@@ -34,7 +35,7 @@ void destroy_food(food food) {
     }
 }
 
-bool can_reach_food(food food, unsigned short x, unsigned short y) {
+bool food_collision(food food, unsigned short x, unsigned short y) {
     return food->x == x && food->y == y;                               
 }
 
@@ -52,6 +53,7 @@ unsigned short get_food_y(food food) {
 
 void move_food(food food, short x, short y) {
     // normalize on map width and height
+    // to have a map "portal" effect on the edges
     x = normalize(x, MAP_WIDTH);
     y = normalize(y, MAP_HEIGHT);
 
